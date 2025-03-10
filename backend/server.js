@@ -13,8 +13,9 @@ app.use(cors({
 
 // Endpoint to fetch visitor's IP address
 app.get('/get-ip', (req, res) => {
-  // Extract the IP address from the X-Forwarded-For header
-  const visitorIp = req.headers['x-forwarded-for'] || req.ip;
+  // Extract the first IP from the X-Forwarded-For header
+  const forwardedIps = req.headers['x-forwarded-for'];
+  const visitorIp = forwardedIps ? forwardedIps.split(',')[0].trim() : req.ip;
   res.json({ ip: visitorIp });
 });
 
