@@ -84,11 +84,11 @@
 
       try {
         // Fetch Shodan data
-        const shodanResponse = await fetch(`https://your-render-backend-url.onrender.com/shodan/${ip}`);
+        const shodanResponse = await fetch(`https://ipcheck-backend.onrender.com/shodan/${ip}`);
         const shodanData = await shodanResponse.json();
 
         // Fetch AbuseIPDB data
-        const abuseIpDbResponse = await fetch(`https://your-render-backend-url.onrender.com/abuseipdb/${ip}`);
+        const abuseIpDbResponse = await fetch(`https://ipcheck-backend.onrender.com/abuseipdb/${ip}`);
         const abuseIpDbData = await abuseIpDbResponse.json();
 
         // Display the results
