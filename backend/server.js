@@ -1,17 +1,17 @@
 const express = require('express');
 const axios = require('axios');
-const cors = require('cors');
+const cors = require('cors'); // Import the cors package
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: ['https://ipcheck-g8jy.onrender.com', 'https://ip.nevamo.de'], // Allow requests from your frontend domain
+  origin: ['https://ipcheck-g8jy.onrender.com', 'https://ip.nevamo.de'], // Allow requests from your frontend domains
   methods: ['GET'], // Allow only GET requests
   credentials: true // Allow cookies and credentials (if needed)
 }));
 
-// Fetch Visitor IP
+// Endpoint to fetch visitor's IP address
 app.get('/get-ip', (req, res) => {
   const visitorIp = req.ip; // Get the visitor's IP address
   res.json({ ip: visitorIp });

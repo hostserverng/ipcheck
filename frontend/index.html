@@ -74,6 +74,20 @@ async function getIpDetails() {
   const ip = document.getElementById('ipInput').value;
   const resultDiv = document.getElementById('result');
 
+  // Fetch visitor's IP address on page load
+async function fetchVisitorIp() {
+  try {
+    const response = await fetch('https://ipcheck-backend.onrender.com/get-ip');
+    const data = await response.json();
+    document.getElementById('ipInput').value = data.ip; // Pre-fill the input field
+  } catch (error) {
+    console.error('Error fetching visitor IP:', error);
+  }
+}
+
+// Fetch visitor's IP when the page loads
+fetchVisitorIp();
+
   // Clear previous results
   resultDiv.innerHTML = '<p>Loading...</p>';
 
