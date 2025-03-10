@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>IP Checker</title>
+  <title>IP Address Details</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -70,14 +70,60 @@
   </div>
 
   <script>
-    // Fetch visitor's IP address on page load
-    async function fetchVisitorIp() {
+    // Fetch visitor's IP address and details on page load
+    async function fetchVisitorIpAndDetails() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p>Loading visitor IP details...</p>';
+
       try {
-        const response = await fetch('https://ipcheck-backend.onrender.com/get-ip');
-        const data = await response.json();
-        document.getElementById('ipInput').value = data.ip; // Pre-fill the input field
+        // Fetch visitor's IP address
+        const ipResponse = await fetch('https://ipcheck-backend.onrender.com/get-ip');
+        const ipData = await ipResponse.json();
+        const visitorIp = ipData.ip;
+
+        // Pre-fill the input field with the visitor's IP
+        document.getElementById('ipInput').value = visitorIp;
+
+        // Fetch IP details using the visitor's IP
+        const detailsResponse = await fetch(`https://ipcheck-backend.onrender.com/ip/${visitorIp}`);
+        if (!detailsResponse.ok) {
+          throw new Error(`Backend Error: ${detailsResponse.statusText}`);
+        }
+        const detailsData = await detailsResponse.json();
+        console.log('Backend Response:', detailsData); // Log the backend response
+
+        // Display the results
+        resultDiv.innerHTML = `
+          <h2>Shodan Data</h2>
+          <p><strong>IP:</strong> ${detailsData.shodan?.ip_str || 'N/A'}</p>
+          <p><strong>Organization:</strong> ${detailsData.shodan?.org || 'N/A'}</p>
+          <p><strong>Location:</strong> ${detailsData.shodan?.city || 'N/A'}, ${detailsData.shodan?.country_name || 'N/A'}</p>
+          <p><strong>Ports:</strong> ${detailsData.shodan?.ports?.join(', ') || 'N/A'}</p>
+          <p><strong>Hostnames:</strong> ${detailsData.shodan?.hostnames?.join(', ') || 'N/A'}</p>
+          <p><strong>Vulnerabilities:</strong> ${detailsData.shodan?.vulns?.join(', ') || 'N/A'}</p>
+
+          <h2>AbuseIPDB Data</h2>
+          <p><strong>IP:</strong> ${detailsData.abuseipdb?.data?.ipAddress || 'N/A'}</p>
+          <p><strong>Abuse Confidence Score:</strong> ${detailsData.abuseipdb?.data?.abuseConfidenceScore ?? 'N/A'}</p>
+          <p><strong>Country:</strong> ${detailsData.abuseipdb?.data?.countryName || 'N/A'}</p>
+          <p><strong>ISP:</strong> ${detailsData.abuseipdb?.data?.isp || 'N/A'}</p>
+          <p><strong>Usage Type:</strong> ${detailsData.abuseipdb?.data?.usageType || 'N/A'}</p>
+          <p><strong>Last Reported:</strong> ${detailsData.abuseipdb?.data?.lastReportedAt || 'N/A'}</p>
+
+          <h2>IPinfo Data</h2>
+          <p><strong>IP:</strong> ${detailsData.ipinfo?.ip || 'N/A'}</p>
+          <p><strong>Hostname:</strong> ${detailsData.ipinfo?.hostname || 'N/A'}</p>
+          <p><strong>City:</strong> ${detailsData.ipinfo?.city || 'N/A'}</p>
+          <p><strong>Region:</strong> ${detailsData.ipinfo?.region || 'N/A'}</p>
+          <p><strong>Country:</strong> ${detailsData.ipinfo?.country || 'N/A'}</p>
+          <p><strong>Location:</strong> ${detailsData.ipinfo?.loc || 'N/A'}</p>
+          <p><strong>Organization:</strong> ${detailsData.ipinfo?.org || 'N/A'}</p>
+          <p><strong>Postal Code:</strong> ${detailsData.ipinfo?.postal || 'N/A'}</p>
+          <p><strong>Timezone:</strong> ${detailsData.ipinfo?.timezone || 'N/A'}</p>
+        `;
       } catch (error) {
-        console.error('Error fetching visitor IP:', error);
+        resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+        console.error(error);
       }
     }
 
@@ -138,8 +184,8 @@
       }
     }
 
-    // Fetch visitor's IP when the page loads
-    fetchVisitorIp();
+    // Fetch visitor's IP and details when the page loads
+    fetchVisitorIpAndDetails();
   </script>
 </body>
 </html>
