@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow"> <!-- Prevents indexing -->
+  <title>IP Address Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #007BFF;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+    }
+    .result h2 {
+      margin-top: 0;
+      color: #007BFF;
+    }
+    .result p {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IP Address Details</h1>
+    <input type="text" id="ipInput" placeholder="Enter IP Address (e.g., 8.8.8.8)">
+    <button onclick="getIpDetails()">Get Details</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    async function getIpDetails() {
+      const ip = document.getElementById('ipInput').value;
+      const resultDiv = document.getElementById('result');
+
+      // Clear previous results
+      resultDiv.innerHTML = '<p>Loading...</p>';
+
+      if (!ip) {
+        resultDiv.innerHTML = '<p>Please enter a valid IP address.</p>';
+        return;
+      }
+
+      try {
+        // Fetch Shodan data
+        const shodanResponse = await fetch(`https://your-render-backend-url.onrender.com/shodan/${ip}`);
+        const shodanData = await shodanResponse.json();
+
+        // Fetch AbuseIPDB data
+        const abuseIpDbResponse = await fetch(`https://your-render-backend-url.onrender.com/abuseipdb/${ip}`);
+        const abuseIpDbData = await abuseIpDbResponse.json();
+
+        // Display the results
+        resultDiv.innerHTML = `
+          <h2>Shodan Data</h2>
+          <p><strong>IP:</strong> ${shodanData.ip_str || 'N/A'}</p>
+          <p><strong>Organization:</strong> ${shodanData.org || 'N/A'}</p>
+          <p><strong>Location:</strong> ${shodanData.city || 'N/A'}, ${shodanData.country_name || 'N/A'}</p>
+          <p><strong>Ports:</strong> ${shodanData.ports?.join(', ') || 'N/A'}</p>
+          <p><strong>Hostnames:</strong> ${shodanData.hostnames?.join(', ') || 'N/A'}</p>
+          <p><strong>Vulnerabilities:</strong> ${shodanData.vulns?.join(', ') || 'N/A'}</p>
+
+          <h2>AbuseIPDB Data</h2>
+          <p><strong>IP:</strong> ${abuseIpDbData.data.ipAddress || 'N/A'}</p>
+          <p><strong>Abuse Confidence Score:</strong> ${abuseIpDbData.data.abuseConfidenceScore || 'N/A'}</p>
+          <p><strong>Country:</strong> ${abuseIpDbData.data.countryName || 'N/A'}</p>
+          <p><strong>ISP:</strong> ${abuseIpDbData.data.isp || 'N/A'}</p>
+          <p><strong>Usage Type:</strong> ${abuseIpDbData.data.usageType || 'N/A'}</p>
+          <p><strong>Last Reported:</strong> ${abuseIpDbData.data.lastReportedAt || 'N/A'}</p>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `<p>Error fetching IP details. Please try again.</p>`;
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
