@@ -11,6 +11,12 @@ app.use(cors({
   credentials: true // Allow cookies and credentials (if needed)
 }));
 
+// Fetch Visitor IP
+app.get('/get-ip', (req, res) => {
+  const visitorIp = req.ip; // Get the visitor's IP address
+  res.json({ ip: visitorIp });
+});
+
 // Shodan Proxy Endpoint
 app.get('/shodan/:ip', async (req, res) => {
   const { ip } = req.params;
