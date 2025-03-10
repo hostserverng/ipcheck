@@ -1,9 +1,15 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors'); // Import the cors package
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+// Enable CORS for all routes
+app.use(cors({
+  origin: 'https://ipcheck-g8jy.onrender.com', // Allow requests from your frontend domain
+  methods: ['GET'], // Allow only GET requests
+  credentials: true // Allow cookies and credentials (if needed)
+}));
 
 // Shodan Proxy Endpoint
 app.get('/shodan/:ip', async (req, res) => {
