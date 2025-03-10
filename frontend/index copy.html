@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="noindex, nofollow"> <!-- Prevents indexing -->
   <title>IP Address Details</title>
   <style>
     body {
@@ -85,18 +85,11 @@
       try {
         // Fetch Shodan data
         const shodanResponse = await fetch(`https://ipcheck-backend.onrender.com/shodan/${ip}`);
-        if (!shodanResponse.ok) {
-          throw new Error(`Shodan API Error: ${shodanResponse.statusText}`);
-        }
         const shodanData = await shodanResponse.json();
 
         // Fetch AbuseIPDB data
         const abuseIpDbResponse = await fetch(`https://ipcheck-backend.onrender.com/abuseipdb/${ip}`);
-        if (!abuseIpDbResponse.ok) {
-          throw new Error(`AbuseIPDB API Error: ${abuseIpDbResponse.statusText}`);
-        }
         const abuseIpDbData = await abuseIpDbResponse.json();
-        console.log('AbuseIPDB Data:', abuseIpDbData); // Log the AbuseIPDB response
 
         // Display the results
         resultDiv.innerHTML = `
@@ -109,15 +102,15 @@
           <p><strong>Vulnerabilities:</strong> ${shodanData.vulns?.join(', ') || 'N/A'}</p>
 
           <h2>AbuseIPDB Data</h2>
-          <p><strong>IP:</strong> ${abuseIpDbData.data?.ipAddress || 'N/A'}</p>
-          <p><strong>Abuse Confidence Score:</strong> ${abuseIpDbData.data?.abuseConfidenceScore ?? 'N/A'}</p>
-          <p><strong>Country:</strong> ${abuseIpDbData.data?.countryName || 'N/A'}</p>
-          <p><strong>ISP:</strong> ${abuseIpDbData.data?.isp || 'N/A'}</p>
-          <p><strong>Usage Type:</strong> ${abuseIpDbData.data?.usageType || 'N/A'}</p>
-          <p><strong>Last Reported:</strong> ${abuseIpDbData.data?.lastReportedAt || 'N/A'}</p>
+          <p><strong>IP:</strong> ${abuseIpDbData.data.ipAddress || 'N/A'}</p>
+          <p><strong>Abuse Confidence Score:</strong> ${abuseIpDbData.data.abuseConfidenceScore || 'N/A'}</p>
+          <p><strong>Country:</strong> ${abuseIpDbData.data.countryName || 'N/A'}</p>
+          <p><strong>ISP:</strong> ${abuseIpDbData.data.isp || 'N/A'}</p>
+          <p><strong>Usage Type:</strong> ${abuseIpDbData.data.usageType || 'N/A'}</p>
+          <p><strong>Last Reported:</strong> ${abuseIpDbData.data.lastReportedAt || 'N/A'}</p>
         `;
       } catch (error) {
-        resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+        resultDiv.innerHTML = `<p>Error fetching IP details. Please try again.</p>`;
         console.error(error);
       }
     }
