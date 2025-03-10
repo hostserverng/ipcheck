@@ -17,9 +17,10 @@ app.get('/shodan/:ip', async (req, res) => {
   const shodanApiKey = process.env.SHODAN_API_KEY; // Use environment variable
   try {
     const response = await axios.get(`https://api.shodan.io/shodan/host/${ip}?key=${shodanApiKey}`);
+    console.log('Shodan API Response:', response.data); // Log the Shodan response
     res.json(response.data);
   } catch (error) {
-    console.error('Shodan API Error:', error.message);
+    console.error('Shodan API Error:', error.response ? error.response.data : error.message);
     res.status(500).json({ error: 'Error fetching Shodan data' });
   }
 });
