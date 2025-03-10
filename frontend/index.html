@@ -70,60 +70,61 @@
   </div>
 
   <script>
-    async function getIpDetails() {
-      const ip = document.getElementById('ipInput').value;
-      const resultDiv = document.getElementById('result');
+async function getIpDetails() {
+  const ip = document.getElementById('ipInput').value;
+  const resultDiv = document.getElementById('result');
 
-      // Clear previous results
-      resultDiv.innerHTML = '<p>Loading...</p>';
+  // Clear previous results
+  resultDiv.innerHTML = '<p>Loading...</p>';
 
-      if (!ip) {
-        resultDiv.innerHTML = '<p>Please enter a valid IP address.</p>';
-        return;
-      }
+  if (!ip) {
+    resultDiv.innerHTML = '<p>Please enter a valid IP address.</p>';
+    return;
+  }
 
-      try {
-        // Fetch combined data from the backend
-        const response = await fetch(`https://ipcheck-backend.onrender.com/ip/${ip}`);
-        if (!response.ok) {
-          throw new Error(`Backend Error: ${response.statusText}`);
-        }
-        const data = await response.json();
-
-        // Display the results
-        resultDiv.innerHTML = `
-          <h2>Shodan Data</h2>
-          <p><strong>IP:</strong> ${data.shodan?.ip_str || 'N/A'}</p>
-          <p><strong>Organization:</strong> ${data.shodan?.org || 'N/A'}</p>
-          <p><strong>Location:</strong> ${data.shodan?.city || 'N/A'}, ${data.shodan?.country_name || 'N/A'}</p>
-          <p><strong>Ports:</strong> ${data.shodan?.ports?.join(', ') || 'N/A'}</p>
-          <p><strong>Hostnames:</strong> ${data.shodan?.hostnames?.join(', ') || 'N/A'}</p>
-          <p><strong>Vulnerabilities:</strong> ${data.shodan?.vulns?.join(', ') || 'N/A'}</p>
-
-          <h2>AbuseIPDB Data</h2>
-          <p><strong>IP:</strong> ${data.abuseipdb?.data?.ipAddress || 'N/A'}</p>
-          <p><strong>Abuse Confidence Score:</strong> ${data.abuseipdb?.data?.abuseConfidenceScore ?? 'N/A'}</p>
-          <p><strong>Country:</strong> ${data.abuseipdb?.data?.countryName || 'N/A'}</p>
-          <p><strong>ISP:</strong> ${data.abuseipdb?.data?.isp || 'N/A'}</p>
-          <p><strong>Usage Type:</strong> ${data.abuseipdb?.data?.usageType || 'N/A'}</p>
-          <p><strong>Last Reported:</strong> ${data.abuseipdb?.data?.lastReportedAt || 'N/A'}</p>
-
-          <h2>IPinfo Data</h2>
-          <p><strong>IP:</strong> ${data.ipinfo?.ip || 'N/A'}</p>
-          <p><strong>Hostname:</strong> ${data.ipinfo?.hostname || 'N/A'}</p>
-          <p><strong>City:</strong> ${data.ipinfo?.city || 'N/A'}</p>
-          <p><strong>Region:</strong> ${data.ipinfo?.region || 'N/A'}</p>
-          <p><strong>Country:</strong> ${data.ipinfo?.country || 'N/A'}</p>
-          <p><strong>Location:</strong> ${data.ipinfo?.loc || 'N/A'}</p>
-          <p><strong>Organization:</strong> ${data.ipinfo?.org || 'N/A'}</p>
-          <p><strong>Postal Code:</strong> ${data.ipinfo?.postal || 'N/A'}</p>
-          <p><strong>Timezone:</strong> ${data.ipinfo?.timezone || 'N/A'}</p>
-        `;
-      } catch (error) {
-        resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-        console.error(error);
-      }
+  try {
+    // Fetch combined data from the backend
+    const response = await fetch(`https://ipcheck-backend.onrender.com/ip/${ip}`);
+    if (!response.ok) {
+      throw new Error(`Backend Error: ${response.statusText}`);
     }
+    const data = await response.json();
+    console.log('Backend Response:', data); // Log the backend response
+
+    // Display the results
+    resultDiv.innerHTML = `
+      <h2>Shodan Data</h2>
+      <p><strong>IP:</strong> ${data.shodan?.ip_str || 'N/A'}</p>
+      <p><strong>Organization:</strong> ${data.shodan?.org || 'N/A'}</p>
+      <p><strong>Location:</strong> ${data.shodan?.city || 'N/A'}, ${data.shodan?.country_name || 'N/A'}</p>
+      <p><strong>Ports:</strong> ${data.shodan?.ports?.join(', ') || 'N/A'}</p>
+      <p><strong>Hostnames:</strong> ${data.shodan?.hostnames?.join(', ') || 'N/A'}</p>
+      <p><strong>Vulnerabilities:</strong> ${data.shodan?.vulns?.join(', ') || 'N/A'}</p>
+
+      <h2>AbuseIPDB Data</h2>
+      <p><strong>IP:</strong> ${data.abuseipdb?.data?.ipAddress || 'N/A'}</p>
+      <p><strong>Abuse Confidence Score:</strong> ${data.abuseipdb?.data?.abuseConfidenceScore ?? 'N/A'}</p>
+      <p><strong>Country:</strong> ${data.abuseipdb?.data?.countryName || 'N/A'}</p>
+      <p><strong>ISP:</strong> ${data.abuseipdb?.data?.isp || 'N/A'}</p>
+      <p><strong>Usage Type:</strong> ${data.abuseipdb?.data?.usageType || 'N/A'}</p>
+      <p><strong>Last Reported:</strong> ${data.abuseipdb?.data?.lastReportedAt || 'N/A'}</p>
+
+      <h2>IPinfo Data</h2>
+      <p><strong>IP:</strong> ${data.ipinfo?.ip || 'N/A'}</p>
+      <p><strong>Hostname:</strong> ${data.ipinfo?.hostname || 'N/A'}</p>
+      <p><strong>City:</strong> ${data.ipinfo?.city || 'N/A'}</p>
+      <p><strong>Region:</strong> ${data.ipinfo?.region || 'N/A'}</p>
+      <p><strong>Country:</strong> ${data.ipinfo?.country || 'N/A'}</p>
+      <p><strong>Location:</strong> ${data.ipinfo?.loc || 'N/A'}</p>
+      <p><strong>Organization:</strong> ${data.ipinfo?.org || 'N/A'}</p>
+      <p><strong>Postal Code:</strong> ${data.ipinfo?.postal || 'N/A'}</p>
+      <p><strong>Timezone:</strong> ${data.ipinfo?.timezone || 'N/A'}</p>
+    `;
+  } catch (error) {
+    resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+    console.error(error);
+  }
+}
   </script>
 </body>
 </html>
