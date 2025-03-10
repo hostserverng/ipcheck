@@ -83,38 +83,41 @@
       }
 
       try {
-        // Fetch Shodan data
-        const shodanResponse = await fetch(`https://ipcheck-backend.onrender.com/shodan/${ip}`);
-        if (!shodanResponse.ok) {
-          throw new Error(`Shodan API Error: ${shodanResponse.statusText}`);
+        // Fetch combined data from the backend
+        const response = await fetch(`https://ipcheck-backend.onrender.com/ip/${ip}`);
+        if (!response.ok) {
+          throw new Error(`Backend Error: ${response.statusText}`);
         }
-        const shodanData = await shodanResponse.json();
-
-        // Fetch AbuseIPDB data
-        const abuseIpDbResponse = await fetch(`https://ipcheck-backend.onrender.com/abuseipdb/${ip}`);
-        if (!abuseIpDbResponse.ok) {
-          throw new Error(`AbuseIPDB API Error: ${abuseIpDbResponse.statusText}`);
-        }
-        const abuseIpDbData = await abuseIpDbResponse.json();
-        console.log('AbuseIPDB Data:', abuseIpDbData); // Log the AbuseIPDB response
+        const data = await response.json();
 
         // Display the results
         resultDiv.innerHTML = `
           <h2>Shodan Data</h2>
-          <p><strong>IP:</strong> ${shodanData.ip_str || 'N/A'}</p>
-          <p><strong>Organization:</strong> ${shodanData.org || 'N/A'}</p>
-          <p><strong>Location:</strong> ${shodanData.city || 'N/A'}, ${shodanData.country_name || 'N/A'}</p>
-          <p><strong>Ports:</strong> ${shodanData.ports?.join(', ') || 'N/A'}</p>
-          <p><strong>Hostnames:</strong> ${shodanData.hostnames?.join(', ') || 'N/A'}</p>
-          <p><strong>Vulnerabilities:</strong> ${shodanData.vulns?.join(', ') || 'N/A'}</p>
+          <p><strong>IP:</strong> ${data.shodan?.ip_str || 'N/A'}</p>
+          <p><strong>Organization:</strong> ${data.shodan?.org || 'N/A'}</p>
+          <p><strong>Location:</strong> ${data.shodan?.city || 'N/A'}, ${data.shodan?.country_name || 'N/A'}</p>
+          <p><strong>Ports:</strong> ${data.shodan?.ports?.join(', ') || 'N/A'}</p>
+          <p><strong>Hostnames:</strong> ${data.shodan?.hostnames?.join(', ') || 'N/A'}</p>
+          <p><strong>Vulnerabilities:</strong> ${data.shodan?.vulns?.join(', ') || 'N/A'}</p>
 
           <h2>AbuseIPDB Data</h2>
-          <p><strong>IP:</strong> ${abuseIpDbData.data?.ipAddress || 'N/A'}</p>
-          <p><strong>Abuse Confidence Score:</strong> ${abuseIpDbData.data?.abuseConfidenceScore ?? 'N/A'}</p>
-          <p><strong>Country:</strong> ${abuseIpDbData.data?.countryName || 'N/A'}</p>
-          <p><strong>ISP:</strong> ${abuseIpDbData.data?.isp || 'N/A'}</p>
-          <p><strong>Usage Type:</strong> ${abuseIpDbData.data?.usageType || 'N/A'}</p>
-          <p><strong>Last Reported:</strong> ${abuseIpDbData.data?.lastReportedAt || 'N/A'}</p>
+          <p><strong>IP:</strong> ${data.abuseipdb?.data?.ipAddress || 'N/A'}</p>
+          <p><strong>Abuse Confidence Score:</strong> ${data.abuseipdb?.data?.abuseConfidenceScore ?? 'N/A'}</p>
+          <p><strong>Country:</strong> ${data.abuseipdb?.data?.countryName || 'N/A'}</p>
+          <p><strong>ISP:</strong> ${data.abuseipdb?.data?.isp || 'N/A'}</p>
+          <p><strong>Usage Type:</strong> ${data.abuseipdb?.data?.usageType || 'N/A'}</p>
+          <p><strong>Last Reported:</strong> ${data.abuseipdb?.data?.lastReportedAt || 'N/A'}</p>
+
+          <h2>IPinfo Data</h2>
+          <p><strong>IP:</strong> ${data.ipinfo?.ip || 'N/A'}</p>
+          <p><strong>Hostname:</strong> ${data.ipinfo?.hostname || 'N/A'}</p>
+          <p><strong>City:</strong> ${data.ipinfo?.city || 'N/A'}</p>
+          <p><strong>Region:</strong> ${data.ipinfo?.region || 'N/A'}</p>
+          <p><strong>Country:</strong> ${data.ipinfo?.country || 'N/A'}</p>
+          <p><strong>Location:</strong> ${data.ipinfo?.loc || 'N/A'}</p>
+          <p><strong>Organization:</strong> ${data.ipinfo?.org || 'N/A'}</p>
+          <p><strong>Postal Code:</strong> ${data.ipinfo?.postal || 'N/A'}</p>
+          <p><strong>Timezone:</strong> ${data.ipinfo?.timezone || 'N/A'}</p>
         `;
       } catch (error) {
         resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
