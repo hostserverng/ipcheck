@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: ['https://ipcheck-g8jy.onrender.com', 'https://ip.nevamo.de'], // Allow requests from your frontend domains
+  origin: ['https://ipcheck-g8jy.onrender.com', 'https://ip2.nevamo.de'], // Allow requests from your frontend domains
   methods: ['GET'], // Allow only GET requests
   credentials: true // Allow cookies and credentials (if needed)
 }));
